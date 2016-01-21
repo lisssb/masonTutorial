@@ -14,6 +14,42 @@ public class Students extends SimState{
 	public Network buddies = new Network(false);
 
 
+	public int getNumStudents() { 
+		return numStudents; 
+	}
+	public void setNumStudents(int val) { 
+		if (val > 0) numStudents = val; 
+	}
+	public double getForceToSchoolMultiplier() {
+		return forceToSchoolMultiplier; 
+	}
+	public void setForceToSchoolMultiplier(double val)
+	{
+		if (forceToSchoolMultiplier >= 0.0) 
+			forceToSchoolMultiplier = val; 
+	}
+	public double getRandomMultiplier() { 
+		return randomMultiplier; 
+	}
+	public void setRandomMultiplier(double val) { 
+		if (randomMultiplier >= 0.0) randomMultiplier = val;
+	}
+
+	public Object domRandomMultiplier() {
+		return new sim.util.Interval(0.0, 100.0);
+	}
+	public double[] getAgitationDistribution()
+	{
+		Bag students = buddies.getAllNodes();
+		double[] distro = new double[students.numObjs];
+		for(int i = 0; i < students.numObjs; i++)
+			distro[i] = ((Student)(students.objs[i])).getAgitation();
+		return distro;
+	}
+
+
+
+
 
 	public Students(long seed) {
 		super(seed);
@@ -49,15 +85,15 @@ public class Students extends SimState{
 			do
 				studentB = students.get(random.nextInt(students.numObjs));
 			while (student == studentB);
-			
+
 			double buddiness = random.nextDouble();
 			buddies.addEdge(student, studentB, new Double(buddiness));
-			
+
 			// who does he dislike?
 			do
 				studentB = students.get(random.nextInt(students.numObjs));
 			while (student == studentB);
-			
+
 			buddiness = random.nextDouble();
 			buddies.addEdge(student, studentB, new Double( -buddiness));
 		}

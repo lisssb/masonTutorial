@@ -101,4 +101,14 @@ public class StudentsWithUI extends GUIState{
 		return "Student Schoolyard Cliques"; 
 	}
 
+	public Object getSimulationInspectedObject() {
+		return state; 
+	}
+	public Inspector getInspector()
+	{
+		Inspector i = super.getInspector();
+		i.setVolatile(true);
+		return i;
+	}
+
 }
