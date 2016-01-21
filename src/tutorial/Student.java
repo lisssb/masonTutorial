@@ -9,6 +9,13 @@ import sim.util.MutableDouble2D;
 import sim.field.network.*;
 public class Student implements Steppable{
 	public static final double MAX_FORCE = 3.0;
+	double friendsClose = 0.0; // initially very close to my friends
+	double enemiesCloser = 10.0; // WAY too close to my enemies
+
+
+	public double getAgitation() {
+		return friendsClose + enemiesCloser; 
+	}
 
 	public void step(SimState state){
 		Students students = (Students) state;
@@ -17,7 +24,7 @@ public class Student implements Steppable{
 		MutableDouble2D sumForces = new MutableDouble2D();
 
 
-
+		friendsClose = enemiesCloser = 0.0;
 		// Go through my buddies and determine how much I want to be near them
 		MutableDouble2D forceVector = new MutableDouble2D();
 		Bag out = students.buddies.getEdges(this, null);
@@ -34,6 +41,7 @@ public class Student implements Steppable{
 				forceVector.setTo((him.x - me.x) * buddiness, (him.y - me.y) * buddiness);
 				if (forceVector.length() > MAX_FORCE) // I'm far enough away
 					forceVector.resize(MAX_FORCE);
+				friendsClose += forceVector.length();
 			}
 			else // the nearer I am to him the more I want to get away from him, up to a limit
 			{
@@ -42,6 +50,8 @@ public class Student implements Steppable{
 					forceVector.resize(0.0);
 				else if (forceVector.length() > 0)
 					forceVector.resize(MAX_FORCE - forceVector.length()); // invert the distance
+
+				enemiesCloser += forceVector.length();
 			}
 			sumForces.addIn(forceVector);
 		}
