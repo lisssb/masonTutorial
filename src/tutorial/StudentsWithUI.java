@@ -11,13 +11,13 @@ import sim.display.GUIState;
 import sim.engine.SimState;
 import sim.portrayal.continuous.ContinuousPortrayal2D;
 import sim.portrayal.simple.OvalPortrayal2D;
-
+import sim.portrayal.network.*;
 public class StudentsWithUI extends GUIState{
 
 	public Display2D display;
 	public JFrame displayFrame;
 	ContinuousPortrayal2D yardPortrayal = new ContinuousPortrayal2D();
-
+	NetworkPortrayal2D buddiesPortrayal = new NetworkPortrayal2D();
 
 	public void start()
 	{
@@ -35,9 +35,14 @@ public class StudentsWithUI extends GUIState{
 		// tell the portrayals what to portray and how to portray them
 		yardPortrayal.setField( students.yard );
 		yardPortrayal.setPortrayalForAll(new OvalPortrayal2D());
+		
+		buddiesPortrayal.setField( new SpatialNetwork2D( students.yard, students.buddies ) );
+		buddiesPortrayal.setPortrayalForAll(new SimpleEdgePortrayal2D());
+		
+		
 		// reschedule the displayer
 		display.reset();
-		display.setBackdrop(Color.black);
+		display.setBackdrop(Color.white);
 		// redraw the display
 		display.repaint();
 	}
@@ -55,6 +60,8 @@ public class StudentsWithUI extends GUIState{
 		//register the frame so it appear in the "Display" list
 		c.registerFrame(displayFrame); // so the frame appears in the "Display" list
 		displayFrame.setVisible(true);
+		
+		display.attach( buddiesPortrayal, "Buddies" );
 		display.attach( yardPortrayal, "Yard" );
 	}
 
